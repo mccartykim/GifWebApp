@@ -24,11 +24,15 @@ class MakeWebm(object):
                 print(str(start))
                 duration = subtitle["end"] - subtitle["start"]
                 print(str(duration.total_seconds()))
-                sp.run(["ffmpeg", "-i", self.movie_path, "-vcodec", 
-                    "libvpx", "-an", "-vf", "subtitles=" + self.sub_path,
+                params = ["ffmpeg", "-vcodec", 
+                    "libvpx", "-an", 
                     "-ss", str(start),
                     "-t", str(duration.total_seconds()),
-                    "output.webm"])
+                    "-i", self.movie_path, 
+                    # "-vf", "subtitles=" + self.sub_path,
+                    "output.webm"]
+                print(params)
+                sp.run(params)
                 return "output.webm"
         return "Line not found"
 
@@ -53,17 +57,22 @@ class MakeWebm(object):
                     "-y",
                     "frames/ffout%03d.png"])
                 sp.run(["./imgmagick/convert", "-loop", "0",
-                ".\\frames\\ffout*.png", "output.gif"])
+                "./frames/ffout*.png", "output.gif"])
                 return "output.webm"
             """
-                sp.run(["ffmpeg", "-i", self.movie_path,
-                    "-ss", str(start),
-                    "-t", str(duration.total_seconds()),
-                    "-an", "-vf", GIF_FILTERS + ",subtitles=" + self.sub_path,
-                    "output.gif"])
+                params = ["ffmpeg", 
+                        "-ss", str(start),
+                        "-t", str(round(duration.total_seconds(), 3)),
+                        "-i", self.movie_path,
+                        "-an", "-vf", GIF_FILTERS + ",subtitles=" 
+                        + self.sub_path,
+                        "output.gif"]
+                print(params)
+                sp.run(params)
                 return "output.gif"
         return "Line not found"
 
+
 if __name__ == "__main__":
-    m = MakeWebm("harold.srt", "haroldandmaude.mp4")
-    m.gif_from_str_match("glorious birds")
+    m = MakeWebm("harold.sub", "harold.m4v")
+    m.webm_from_str_match("buttocks")

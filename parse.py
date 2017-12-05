@@ -10,7 +10,6 @@ DATETIME_ZERO = datetime.strptime("00:00:00,000", SRT_TIME_FMT)
 # store the format for SRT in frames
 MICRODVD_FMT = r"\{(\d*)\}"
 
-# STUB FIXME TODO HOO BOY XXX
 def parse_srt(fpath):
     subtitles = []
 
@@ -48,11 +47,11 @@ def parse_microdvd(fpath):
             ln = line.strip()
             m = re.search(r"\{(\d*)\}\{(\d*)\}(.*)", ln)
             try:
-                raw_start = m[1]
-                raw_end = m[2]
-                line = re.sub("\|", "\n", m[3])
-                start = timedelta(seconds=(int(raw_start) / 23.976)) 
-                end = timedelta(seconds=(int(raw_end) / 23.976))
+                raw_start = m.group(1)
+                raw_end = m.group(2)
+                line = re.sub("\|", "\n", m.group(3))
+                start = timedelta(seconds=round(int(raw_start) / 23.976, 3)) 
+                end = timedelta(seconds=round(int(raw_end) / 23.976, 3))
                 subt["start"] = start
                 subt["end"] = end
                 subt["line"] = line
